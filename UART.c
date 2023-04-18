@@ -1,6 +1,6 @@
 #include "uart.h" //Fetch and include my header file.
 
-void USART2_Init(void){
+void USART2_Init(void){ //Init function from uart.h
  RCC->APB1ENR  |=  0x20000; 
  RCC->AHB1ENR   |=0x01;
  
@@ -34,7 +34,7 @@ int USART2_read(void){
 	return USART2->DR;
 }
 
-struct __FILE { int handle; };
+struct __FILE { int handle; }; 
 FILE __stdin  = {0};
 FILE __stdout = {1};
 FILE __stderr = {2};
@@ -52,7 +52,7 @@ int fgetc(FILE *f) {
 
     USART2_write(c);       
 
-    return c;
+    return c; //Return c
 }
 
 int fputc(int c, FILE *f) {
@@ -63,7 +63,7 @@ int fputc(int c, FILE *f) {
 int n; //Declare variable
 char str[80]; //Declare char array
 		
-void test_setup(void){ 
+void test_setup(void){ //Init function from uart.h
 	
 	printf("please enter a number: "); //print function, ask user to enter a number.
 	scanf("%d", &n); //Scan function and retrieve number.
