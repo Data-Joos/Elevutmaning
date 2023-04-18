@@ -1,62 +1,62 @@
 #include "uart.h" //Fetch and include my header file.
 
 void USART2_Init(void){ //Init function from uart.h
- RCC->APB1ENR  |=  0x20000; 
- RCC->AHB1ENR   |=0x01;
+ RCC->APB1ENR  |=  0x20000; //Enable the clock for USART2 by setting bit 17 of RCC->APB1ENR to 1
+ RCC->AHB1ENR   |=0x01; //
  
-GPIOA->MODER &=~0x00F0;
-GPIOA->MODER |= 0x00A0; 
+GPIOA->MODER &=~0x00F0; //
+GPIOA->MODER |= 0x00A0; //
 
-GPIOA->AFR[0] &= ~0xFF00;
-GPIOA->AFR[0] |= 0x7700;
+GPIOA->AFR[0] &= ~0xFF00; //
+GPIOA->AFR[0] |= 0x7700; //
 
 
-USART2->BRR  =  0x0683;
-USART2->CR1  =  0x000C; 
-USART2->CR2  =  0x000;
-USART2->CR3  =  0x000;
-USART2->CR1  |=  0x2000; 
+USART2->BRR  =  0x0683; //  
+USART2->CR1  =  0x000C; //
+USART2->CR2  =  0x000; //Leave USART2->CR2 at its default value.
+USART2->CR3  =  0x000; //Leave USART2->CR3 at its default value.
+USART2->CR1  |=  0x2000; //
 	
 	
 
 }
 
-int USART2_write(int ch){
+int USART2_write(int ch){ //
 
-	while(!(USART2->SR & 0x0080)){}
-	USART2->DR = (ch & 0xFF);
+	while(!(USART2->SR & 0x0080)){} //
+	USART2->DR = (ch & 0xFF); //
 	
-  return ch;
+  return ch; //Return character that was written
 }
 
-int USART2_read(void){
-  while(!(USART2->SR & 0x0020)){}
-	return USART2->DR;
+int USART2_read(void){ //Create void with new variable 
+  while(!(USART2->SR & 0x0020)){} //While function 
+	return USART2->DR; //Return UART2 to Data register
 }
 
-struct __FILE { int handle; }; 
-FILE __stdin  = {0};
-FILE __stdout = {1};
-FILE __stderr = {2};
+struct __FILE { int handle; }; //
+FILE __stdin  = {0}; //
+FILE __stdout = {1}; //
+FILE __stderr = {2}; //
 
 
-int fgetc(FILE *f) {
-    int c;
+int fgetc(FILE *f) { //
+    int c; //Create variable
 
-    c = USART2_read();     
+    c = USART2_read(); //     
 
-    if (c == '\r') {        
-        USART2_write(c);    
-        c = '\n';
+    if (c == '\r') {        //
+        USART2_write(c);    //
+        c = '\n'; //
     }
 
-    USART2_write(c);       
+    USART2_write(c); //      
 
     return c; //Return c
 }
 
-int fputc(int c, FILE *f) {
-    return USART2_write(c);
+int fputc(int c, FILE *f) { //
+    return USART2_write(c); //
 }
 
 
