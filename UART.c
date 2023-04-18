@@ -60,18 +60,18 @@ int fputc(int c, FILE *f) {
 }
 
 
-int n;
-char str[80];
+int n; //Declare variable
+char str[80]; //Declare char array
 		
-void test_setup(void){
+void test_setup(void){ 
 	
-	printf("please enter a number: ");
-	scanf("%d", &n);
-	printf("the number entered is: %d\r\n", n);
-	printf("please type a character string: ");
-	gets(str);
-	printf("the character string entered is: ");
-	puts(str);
-	printf("\r\n");
+	printf("please enter a number: "); //print function, ask user to enter a number.
+	scanf("%d", &n); //Scan function and retrieve number.
+	printf("the number entered is: %d\r\n", n); //Print function, show input from user(number)
+	printf("please type a character string: "); //Print function, ask user for a string.
+	gets(str); //Gets function(string)
+	printf("the character string entered is: "); //Print function, shows input from user(string)
+	puts(str); //Print the string from user.
+	printf("\r\n"); //Prints new line
 	
 }
