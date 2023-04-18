@@ -1,4 +1,4 @@
-#include "uart.h" //Fetch our header file, with functions and library.
+#include "uart.h" //Fetch and include our header file, with functions and library.
 
 
 int main(){ //Create main function
