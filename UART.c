@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "uart.h" //Fetch and include my header file.
 
 void USART2_Init(void){
  RCC->APB1ENR  |=  0x20000; 
