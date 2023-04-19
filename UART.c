@@ -21,26 +21,27 @@ USART2->CR1  |=  0x2000; //Omställer bit 13 (UART-aktiveringen) till 1
 
 }
 
-int USART2_write(int ch){ //
+int USART2_write(int ch){ //Deklarerar skrivfunktionen(överföringen av data till terminalen)
 
-	while(!(USART2->SR & 0x0080)){} //
-	USART2->DR = (ch & 0xFF); //
+	while(!(USART2->SR & 0x0080)){} //Sätter vi ett krav som kontrolllerar statusen på överförningen är tom och kan ya emot nästa karaktär(byte)
+	USART2->DR = (ch & 0xFF); //Sätter överföringenav byten till dataregister
 	
   return ch; //Return character that was written
 }
 
-int USART2_read(void){ //Create void with new variable 
-  while(!(USART2->SR & 0x0020)){} //While function 
-	return USART2->DR; //Return UART2 to Data register
+int USART2_read(void){ //Create void with new variable (mottagningen av ny information)Deklarerar läsfunktion
+  while(!(USART2->SR & 0x0020)){} //Sätter vi ett krav som kontrollerar om det finns mr data att hämta
+	return USART2->DR; //Return UART2 to Data register. Sätter överföringen av byten till dataregister
 }
-
-struct __FILE { int handle; }; //
+//interface för standard I/O i C
+//En omdirefering till att utge data i terminalen
+struct __FILE { int handle; }; //Strukturerar våra huvudsakliga överföringsströmmar
 FILE __stdin  = {0}; //
 FILE __stdout = {1}; //
 FILE __stderr = {2}; //
 
 
-int fgetc(FILE *f) { //
+int fgetc(FILE *f) { //fget hämtar en byte från standard strömmen och behandlar även teckenreturer
     int c; //Create variable
 
     c = USART2_read(); //     
@@ -55,7 +56,7 @@ int fgetc(FILE *f) { //
     return c; //Return c
 }
 
-int fputc(int c, FILE *f) { //
+int fputc(int c, FILE *f) { //fput skriver en byte till standardströmmen
     return USART2_write(c); //
 }
 
