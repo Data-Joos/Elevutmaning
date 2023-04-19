@@ -1,21 +1,21 @@
 #include "uart.h" //Fetch and include my header file.
 
-void USART2_Init(void){ //Init function from uart.h
+void USART2_Init(void){ //Declare a function and init from uart.h
  RCC->APB1ENR  |=  0x20000; //Enable the clock for USART2 by setting bit 17 of RCC->APB1ENR to 1
- RCC->AHB1ENR   |=0x01; //
+ RCC->AHB1ENR   |=0x01; //Enable clock access PortA
  
-GPIOA->MODER &=~0x00F0; //
-GPIOA->MODER |= 0x00A0; //
+GPIOA->MODER &=~0x00F0; //Rensar bitarna 4-7 för att föbereda pins PA2 och PA3
+GPIOA->MODER |= 0x00A0; //Enable pins to port, alternative function. Declare bits 5-7 to 1, to activate alternative function on PA2 & PA3
 
-GPIOA->AFR[0] &= ~0xFF00; //
-GPIOA->AFR[0] |= 0x7700; //
+GPIOA->AFR[0] &= ~0xFF00; // Rensar bitarna 8-15 för att förbereda pins PA2 and PA3
+GPIOA->AFR[0] |= 0x7700; //Choose type of alternative for pins. Sätter bitarna 8-11 samt 12-15 format 0111
 
-
-USART2->BRR  =  0x0683; //  
-USART2->CR1  =  0x000C; //
+//Configuaration of UART
+USART2->BRR  =  0x0683; //Sätter vi standard baud-rate med hjälp av hexadecimalen 
+USART2->CR1  =  0x000C; //Sätter vi tx och rx till att arbeta i 8-bitars data.(8-bitars data, 1stop bt,ingen paritet
 USART2->CR2  =  0x000; //Leave USART2->CR2 at its default value.
 USART2->CR3  =  0x000; //Leave USART2->CR3 at its default value.
-USART2->CR1  |=  0x2000; //
+USART2->CR1  |=  0x2000; //Omställer bit 13 (UART-aktiveringen) till 1
 	
 	
 
