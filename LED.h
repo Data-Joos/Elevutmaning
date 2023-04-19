@@ -1,17 +1,17 @@
 #ifndef LED_H
-#define LED_H
+#define LED_H //Definerar att headern betecknas med LED.h och skall inkluderas vid benämning
 
-#include <stdint.h>
-#include "UART.h"
+#include <stdint.h> //Inkluderar ett av c:s standardbibliotek
+#include "UART.h" //Inkluderar vårt UART-drivrutin
 
-typedef enum {
+typedef enum { //Bygger en funktion som numrerar de olika färgerna som kan antas av LED
   RED = 0,
   GREEN,
   YELLOW,
   BLUE
 }LedColor_Type;
 
-typedef enum {
+typedef enum {//Bygger en funktion som numrerar de olika statusarna som
   OFF = 0,
   ON = 1,
 }LedState_Type;
