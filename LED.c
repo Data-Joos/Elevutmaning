@@ -19,7 +19,7 @@ void Led_setState(Led_type * const me, LedState_Type _state){
 
 //En funktion som utger status på LED
 
-
+//Konstruktorn för LED-lamportna
 include "led.h"
 
 
@@ -29,18 +29,20 @@ void Led_ctor(Led_Type * const me, LedColor_Type _color, LedState_Type _state){
 	me->state  = _state; 
 
 	 	
-	 /*Hardware Init*/
+	 /*Hardware Init*///Enablea klockan för LED-porten(GPIOB)
 	RCC->AHB1ENR |= LED_PORT_CLOCK;  
-	
+	//Konfigurera LED-pinsen baserad på deras färg och status
 	switch(_color){
 		 
-		case RED:
+		case RED: //Sätta portläget för LED_konfigurationen till output
 			LED_PORT->MODER |=LED_RED_MODE_BIT;
 		  if(me->state  == ON){
+			  //Stänga på LED
 			   LED_PORT->ODR |= LED_RED_PIN;
 				printf("The RED Led is set ON \n\r");
 			}
 			else{
+		        //Stänga av LED
 			  LED_PORT->ODR &= ~LED_RED_PIN;
         printf("The RED Led is set OFF \n\r");
 
@@ -91,20 +93,24 @@ void Led_ctor(Led_Type * const me, LedColor_Type _color, LedState_Type _state){
 
 
 void Led_setState(Led_Type * const me,LedState_Type _state){
-
+//Sätta statusen av LED:n
 	 me->state =  _state;
 
 	 
-	
+	//Kolla färgen på LED för att veta att korrekt LED manipuleras
 	switch(me->color){
-		 
+		 //Om LED Röd
 		case RED:
+			//Sätta pin till outputläge
 			LED_PORT->MODER |=LED_RED_MODE_BIT;
+			//Om önskad status är ON
 		  if(me->state  == ON){
+			  //Definerar pin output till Aktiv
 			   LED_PORT->ODR |= LED_RED_PIN;
 				printf("The RED Led is set ON \n\r");
 			}
 			else{
+				//Definerar pin output till iaktiv
 			  LED_PORT->ODR &= ~LED_RED_PIN;
         printf("The RED Led is set OFF \n\r");
 
@@ -153,7 +159,7 @@ void Led_setState(Led_Type * const me,LedState_Type _state){
 	}
 }
 
-
+//Kontrollera färgen av den LED som efterfrågas,printa sedan statusen
 LedState_Type Led_getState(Led_Type * const me){
 
 	switch(me->color){
