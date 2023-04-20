@@ -69,7 +69,7 @@ typedef enum{
 
 
 /*Led's attributes*/
-//Definerar de attribut som LED består utav
+//Definerar de attribut som LED består utav CLASS ÄNDRA
 typedef struct{
 	
  LedColor_Type color; 
@@ -82,3 +82,17 @@ void Led_ctor(Led_Type * const me, LedColor_Type _color, LedState_Type _state);
 void Led_setState(Led_Type * const me,LedState_Type _state);
 LedState_Type Led_getState(Led_Type * const me);
 #endif
+
+class Led{
+	
+	private:
+	LedColor_Type color;
+	LedState_type state;
+	
+public:
+	Led(LedColor_Type _color,LedState_type _state);
+	void setState(LedState_Type _state);
+	LedState_Type getState() const;
+	
+};
+	
