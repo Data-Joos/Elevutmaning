@@ -1,30 +1,32 @@
-#include "uart.h" //Fetch and include my header file.
+#include "uart.h" //Fetch and includes our header file.
 
+//Defines function to initialize the USART protocol and it's constituents. This function is a driver.
 void USART2_Init(void){ //Declare a function and init from uart.h
- RCC->APB1ENR  |=  0x20000; //Enable the clock for USART2 by setting bit 17 of RCC->APB1ENR to 1
- RCC->AHB1ENR   |=0x01; //Enable clock access PortA
- 
-GPIOA->MODER &=~0x00F0; //Rensar bitarna 4-7 för att föbereda pins PA2 och PA3
-GPIOA->MODER |= 0x00A0; //Enable pins to port, alternative function. Declare bits 5-7 to 1, to activate alternative function on PA2 & PA3
 
-GPIOA->AFR[0] &= ~0xFF00; // Rensar bitarna 8-15 för att förbereda pins PA2 and PA3
-GPIOA->AFR[0] |= 0x7700; //Choose type of alternative for pins. Sätter bitarna 8-11 samt 12-15 format 0111
+//Configure the system clock (RCC) for the microcontroller
+//APB1ENR is a register within RCC, which is used for activating and deactivating the clock
+ RCC->APB1ENR  |=  0x20000; //Enable the clock for USART2 by setting bit 17 of RCC->APB1ENR to 1.
+ RCC->AHB1ENR   |=0x01; //Enable GPIO, set bit 0 in AHB1ENR to 1.
+ 
+GPIOA->MODER &=~0x00F0; //Clears bits 4-7 to prepare pins PA2 and PA3
+GPIOA->MODER |= 0x00A0; //Enables bites 5-7 to 1, to prepare and activate alternative function on pins PA2 and PA3.
+GPIOA->AFR[0] &= ~0xFF00; // Clears bits 8-15 to prepare pins PA2 and PA3
+GPIOA->AFR[0] |= 0x7700; //Choose type of alternative for pins. Sets bits 8-11 and 12-15 format 0111
 
 //Configuaration of UART
-USART2->BRR  =  0x0683; //Sätter vi standard baud-rate med hjälp av hexadecimalen 
-USART2->CR1  =  0x000C; //Sätter vi tx och rx till att arbeta i 8-bitars data.(8-bitars data, 1stop bt,ingen paritet
+USART2->BRR  =  0x0683; //We set the default baud rate using hexadecimal. 0x0683 (9600bps)
+USART2->CR1  =  0x000C; //Put tx and rx to work in 8-bit data.(8-bit data, 1 stop bt, no parity.)
 USART2->CR2  =  0x000; //Leave USART2->CR2 at its default value.
 USART2->CR3  =  0x000; //Leave USART2->CR3 at its default value.
-USART2->CR1  |=  0x2000; //Omställer bit 13 (UART-aktiveringen) till 1
-	
-	
+USART2->CR1  |=  0x2000; //Resets bit 13 (the UART-enable) to 1
 
 }
-
-int USART2_write(int ch){ //Deklarerar skrivfunktionen(överföringen av data till terminalen)
-
-	while(!(USART2->SR & 0x0080)){} //Sätter vi ett krav som kontrolllerar statusen på överförningen är tom och kan ya emot nästa karaktär(byte)
-	USART2->DR = (ch & 0xFF); //Sätter överföringenav byten till dataregister
+//UART Read and Write rules
+int USART2_write(int ch){ //Declare the write function(transfer of data to the terminal).
+	
+	//Loop, send byte by byte.
+	while(!(USART2->SR & 0x0080)){} //Sets a requirement that checks the status of the transfer is empty and can receive the next character.(Byte)
+	USART2->DR = (ch & 0xFF); //Sets the transfer of the byte to the data registers.
 	
   return ch; //Return character that was written
 }
@@ -33,38 +35,38 @@ int USART2_read(void){ //Create void with new variable (mottagningen av ny infor
   while(!(USART2->SR & 0x0020)){} //Sätter vi ett krav som kontrollerar om det finns mr data att hämta
 	return USART2->DR; //Return UART2 to Data register. Sätter överföringen av byten till dataregister
 }
-//interface för standard I/O i C
-//En omdirefering till att utge data i terminalen
-struct __FILE { int handle; }; //Strukturerar våra huvudsakliga överföringsströmmar
+//Interface for standard I/O in C
+//A redirect to output data in the terminal
+struct __FILE { int handle; }; //Structuring our main transmission currents
 FILE __stdin  = {0}; //
 FILE __stdout = {1}; //
 FILE __stderr = {2}; //
 
 
-int fgetc(FILE *f) { //fget hämtar en byte från standard strömmen och behandlar även teckenreturer
+int fgetc(FILE *f) { //fget retrieves a byte from the standard stream and processes character returns
     int c; //Create variable
 
-    c = USART2_read(); //     
+    c = USART2_read(); 
 
-    if (c == '\r') {        //
-        USART2_write(c);    //
-        c = '\n'; //
+    if (c == '\r') {
+        USART2_write(c);
+        c = '\n'; 
     }
 
-    USART2_write(c); //      
+    USART2_write(c);     
 
     return c; //Return c
 }
 
 int fputc(int c, FILE *f) { //fput skriver en byte till standardströmmen
-    return USART2_write(c); //
+    return USART2_write(c); 
 }
 
 
-int n; //Declare variable
-char str[80]; //Declare char array
+int n; //Declare variable, a byte for use in the test function.
+char str[80]; //Declare char array and sets a limitation in the transfer of characters.
 		
-void test_setup(void){ //Init function from uart.h
+void test_setup(void){ //Init function from uart.h that will test our read- and write function.
 	
 	printf("please enter a number: "); //print function, ask user to enter a number.
 	scanf("%d", &n); //Scan function and retrieve number.
